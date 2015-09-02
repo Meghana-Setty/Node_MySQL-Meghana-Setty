@@ -25,7 +25,7 @@ theConnection.query("insert into contacts SET ?",
      	if(err){
      		console.log(err);
      	}
-     	console.log("Contact insert result: ", result);
+
      	contactId = result.insertId;
      });
 

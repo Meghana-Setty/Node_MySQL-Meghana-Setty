@@ -16,11 +16,21 @@ NOTES: 		1) Ensure you'e started mysql server and created the contacts table bef
 */
 
 exports.GetConnection = function(){
+	if(theConnection==null)
+	{
+	theConnection=mysql.createConnection({
+		host:"localhost",
+		user:"root",
+		password:"root",
+		database:"nodejs",
+	});
+	}
 	return theConnection;
 }
 
 exports.EndConnection = function(){
-	
+		if(theConnection!=null)
+		theConnection.end();	
 }
 
 /*
@@ -39,7 +49,9 @@ NOTES: 		  Pay attention to the casing of contact object properties (firstName, 
 
 */
 exports.AddContact = function(contact, callback){
-
+		theConnection.query("insert into contacts SET ?",contact,function(err,result){
+			callback(err,result);
+		});
 }
 
 /*
@@ -57,7 +69,11 @@ ERROR CASES: error object should be passed to callback().
 */
 
 exports.ReadContact = function(id, callback){
+		theConnection.query("select * from contacts where id = ?",[id],function(err,result)
+			{
 
+				callback(err,result);
+			});
 }
 
 /*
@@ -73,6 +89,10 @@ ERROR CASES: error object should be passed to callback().
 */
 
 exports.ReadContacts = function(callback){
+	theConnection.query("select * from contacts",function(err,result)
+		{
+			callback(err,result);
+		});
 
 }
 
@@ -91,7 +111,12 @@ ERROR CASES: error object should be passed to callback().
 
 */
 exports.UpdateContact = function(id, newPhoneNumber, callback){
-
+ 		theConnection.query("update contacts set phone = ? where id = ?",[newPhoneNumber,id],function(err,result)
+ 			{
+ 				exports.ReadContact(id,function(err,result){
+ 				callback(err,result[0]);	
+ 				});
+ 			});
 }
 
 /*
@@ -107,5 +132,8 @@ ERROR CASES: error object should be passed to callback().
 
 */
 exports.DeleteContact = function(id, callback){
-
+	theConnection.query("delete from contacts where id= ?",[id],function(err,result)
+		{
+			callback(err,result);
+		});
 }

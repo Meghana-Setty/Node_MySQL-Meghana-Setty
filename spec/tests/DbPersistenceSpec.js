@@ -83,7 +83,7 @@ describe("DbPersistence Test Suite", function(){
 	it("should update contact",function(done){
 
 		contactsDb.UpdateContact(larryContact.id,"32003200", function(err, result){
-
+			console.log(result);
 			expect(result.firstName).toBe("Larry");
 			expect(result.phone).toBe("32003200");
 			done();
